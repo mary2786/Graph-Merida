@@ -1,0 +1,39 @@
+type Query{
+    saludo(name:String!):String!
+    getPosts:[Post]
+}
+
+type Mutation{
+    createPost(data:inputPost):Post
+    createUser(data:inputUser):User
+}
+
+#graphql tiene el tipo de dato ID
+type Post{
+    id:ID
+    title:String!
+    body:String!
+    createdAt:String!
+    comments:[String]
+    user:User!
+}
+
+input inputPost{
+    title:String!
+    body:String!
+    createdAt:String!
+    comments:[String]
+    user:ID
+}
+
+type User{
+    id:ID,
+    name:String!
+    email:String!
+}
+
+input inputUser{
+    name:String!
+    email:String!
+    password:String!
+}

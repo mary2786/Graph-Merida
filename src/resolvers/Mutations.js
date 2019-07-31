@@ -1,7 +1,8 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
+const authenticated = require('../utils/authenticated');
 
-const createPost = async (root, args)=>{ // async es para qye espere a que se ejecute el await
+const createPost = async (root, args)=>{ // async es para que espere a que se ejecute el await
     /*let newPost = new Post({
         title:args.data.title,
         body:args.data.body,
@@ -32,8 +33,18 @@ const createUser = async (root, args)=>{
     return user;
 }
 
+const login = async(root, args)=>{
+    const token = await authenticated(args)
+            .catch((err)=>new Error(err));
+    return {
+        token,
+        message:'OK'
+    }
+}
+
 
 module.exports = {
     createPost,
-    createUser
+    createUser,
+    login
 };

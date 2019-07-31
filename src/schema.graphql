@@ -1,11 +1,26 @@
+directive @auth on FIELD_DEFINITION | FIELD
+
 type Query{
     saludo(name:String!):String!
     getPosts:[Post]
+    getPost(id:ID!):Post
+    getUsers:[User] @auth
 }
 
 type Mutation{
     createPost(data:inputPost):Post
     createUser(data:inputUser):User
+    login(data:inputToken!):Auth
+}
+
+input inputToken{
+    email:String!
+    password:String!
+}
+
+type Auth{
+    token:String!
+    message:String!
 }
 
 #graphql tiene el tipo de dato ID

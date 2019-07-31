@@ -3,6 +3,9 @@ const { GraphQLServer } = require('graphql-yoga');
 const { importSchema }  = require('graphql-import');
 const typeDefs = importSchema('./src/schema.graphql');
 const mongoose = require('mongoose');
+const { makeExecutableSchema} = require('graphql-tools');
+const { AuthDirective} = require('./resolvers/directive');
+const verifyToken = require('./utils/token');
 
 mongoose.connect(process.env.MONGOURL, {useNewUrlParser:true}, (err)=>{
     if(!err){
@@ -10,18 +13,30 @@ mongoose.connect(process.env.MONGOURL, {useNewUrlParser:true}, (err)=>{
     }
 });
 
-const { getPosts } = require('./resolvers/Querys');
-const { createPost, createUser } = require('./resolvers/Mutations');
+const { getPosts, getPost, getUsers } = require('./resolvers/Querys');
+const { createPost, createUser, login} = require('./resolvers/Mutations');
 
 const resolvers = {
     Query: { 
-        getPosts
+        getPosts,
+        getPost,
+        getUsers
     },
     Mutation:{
         createPost,
-        createUser
+        createUser,
+        login
     }
 }
 
-const server = new GraphQLServer({ typeDefs, resolvers });
+
+const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers,
+    schemaDirectives:{
+        auth:AuthDirective
+    }
+})
+
+const server = new GraphQLServer({ schema, context:async({request})=>verifyToken(request)});
 server.start(() => console.log('Server is running on localhost:4000'));

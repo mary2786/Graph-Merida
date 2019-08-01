@@ -44,14 +44,13 @@ const login = async(root, args)=>{
 }
 
 const addPhoto = async(root, args)=>{
-    console.log(args);
+
     if(args.photo){
         const { createReadStream } = await args.photo;
         const stream = createReadStream();
-        console.log('Stream ==>>> ' + stream);
-
         const photo = await storage({stream});
-        console.log(photo);
+
+        await User.findByIdAndUpdate(args.id, {$set:{image:photo.url}})
 
         return photo.url;
     }

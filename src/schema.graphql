@@ -12,7 +12,7 @@ type Mutation{
     createPost(data:inputPost):Post
     createUser(data:inputUser):User
     login(data:inputToken!):Auth
-    addPhoto(photo:Upload!):String
+    addPhoto(photo:Upload!,id:ID):String
 }
 
 input inputToken{
